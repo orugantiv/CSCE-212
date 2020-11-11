@@ -1,165 +1,132 @@
-#written by Sam Dunny
+#By; V.N.Anirudh Oruganti
 .data
-prompt: .asciiz "\nEnter 4 integers for A,B,C,D respectively: \n"
+prompt: .asciiz "\nEnter 4 integers for A,B,C,D respectively:\n"
 space: .asciiz "\n"
-decimal1: .asciiz "f = "
-decimal2: .asciiz "g = "
-floatValue0: .float 0.0
-floatValue1: .float 0.1
-floatValue2: .float 0.2
-floatValue3: .float 0.3
-floatValue4: .float 0.4
+f: .asciiz "f = "
+g: .asciiz "g = "
+Zero.Zero: .float 0.0
+Zero.One: .float 0.1
+Zero.Two: .float 0.2
+Zero.Three: .float 0.3
+Zero.Four: .float 0.4
 
 .text
+
 main:
 
+	
+	################ User's Input ##############
+	
 	#displays prompt 
-	li $v0,4 #loads syscall-4, address of string 
 	la $a0,prompt #loads address of string memory
-	syscall #print
+	li $v0,4 #System Call Print String 
+	syscall #syscall 
 	
-	#Read A input to $v0 and store it in $t1
-	li $v0, 5 #read_int
-	syscall #make the syscall
-	move $t1, $v0 #moves $v0 to $t1
+	#Takes input for A and stores it in $t0
+	li $v0, 5 #System Call Input Integer
+	syscall #syscall
+	move $s0, $v0 #saves input A to $t0
 	
-	#Read B input in $v0 and store it in $t2
-   	li $v0, 5 #read_int
-   	syscall #makes the syscall
-   	move $t2, $v0 #moves $v0 to $t2
+	#Takes input for B and stores it in $t1
+	li $v0, 5 #System Call Input Integer
+   	syscall #syscall
+   	move $s1, $v0 #saves input B to $t1
   
-	#Read C input in $v0 and store it in $t3
-  	li $v0, 5 #read_int
-   	syscall #makes the syscall
-   	move $t3, $v0 #moves $v0 to $t3
+	#Takes input for C and stores it in $t2
+	li $v0, 5 #System Call Input Integer
+   	syscall #syscall
+   	move $s2, $v0 ##saves input C to $t2
   
-   	#Read D input in $v0 and store it in $t4
-	li $v0, 5 #read_int
-   	syscall #makes the syscall
-   	move $t4, $v0 #moves $v0 to $t4
-   	
-   	#load float values into registers
-   	l.s $f0, floatValue0 
-   	l.s $f1, floatValue1 
-	l.s $f2, floatValue2 
-	l.s $f3, floatValue3 
-	l.s $f4, floatValue4 
+	#Takes input for D and stores it in $t3
+	li $v0, 5 #System Call Input Integer
+   	syscall #syscall
+   	move $s3, $v0 #saves input D to $t3
+
+
+	 
 	
 	################ F START ################
 	
 	########## PROCESS FOR 0.1*A^4 ##########
+	li $t0, 1        
+	li $t1, 4    
+	move $t3,$s0        
+	move $t4,$s0
+	move $t5,$s0
+	jal Integer_Multiplication
 	
-	add $a0, $t1, $zero #loads A into $a0
-	add $a1, $t1, $zero #loads A into $a1
-	jal MULTIPLICATION #jump to procedure
-	move $t0, $v0 #moves A^2 into $t0
-	
-	add $a0, $t0, $zero #loads A^2 into $a0
-	add $a1, $t0, $zero #loads A^2 into $a1
-	jal MULTIPLICATION #jump to procedure
-	move $t0, $v0 #moves A^4 into $t0
-	
-	li $t6, 0 #increment
-	Loop1:
-		bge $t6, $t0, Quit1 #runs as long as $t6 < A^4
-		add.s $f0, $f0, $f1 #adds 0.1 A^4 times
-		addi $t6, $t6, 1 #increment
-		j Loop1
-		
-	Quit1:
-	
-	add.s $f5, $f5, $f0 #duplicates $f0
-	l.s $f0, floatValue0 #resets $f0
-	#0.1*A^4 is now in $f5
-	
+	li $t6,0
+	l.s $f1,Zero.One
+	move $t7,$t5
+	jal Decimal_Multiplication
+	mov.s $f2,$f0
+	l.s $f0,Zero.Zero
 	#########################################
 	
 	########## PROCESS FOR 0.2*B^3 ##########
+	li $t0, 1        
+	li $t1, 3    
+	move $t3,$s1        
+	move $t4,$s1
+	move $t5,$s1
+	jal Integer_Multiplication
 	
-	add $a0, $t2, $zero #loads B into $a0
-	add $a1, $t2, $zero #loads B into $a1
-	jal MULTIPLICATION #jump to procedure
-	move $t0, $v0 #moves B^2 into $t0
-	
-	add $a0, $t2, $zero #loads B into $a0
-	add $a1, $t0, $zero #loads B^2 into $a1
-	jal MULTIPLICATION
-	move $t0, $v0 #moves B^3 into $t0
-	
-	li $t6, 0 #increment
-	Loop2:
-		bge $t6, $t0, Quit2 #runs as long as $t6 < B^3
-		add.s $f0, $f0, $f2 #adds 0.2 B^3 times
-		addi $t6, $t6, 1 #increment
-		j Loop2
+	li $t6,0
+	l.s $f1,Zero.Two
+	move $t7,$t5
+	jal Decimal_Multiplication
+	mov.s $f3,$f0
+	l.s $f0,Zero.Zero
+
 		
-	Quit2:
-	
-	add.s $f6, $f6, $f0 #duplicates $f0
-	l.s $f0, floatValue0 #resets $f0
-	#0.2*B^3 is now in $f6
-	
 	#########################################
 	
 	########## PROCESS FOR 0.3*C^2 ##########
+	li $t0, 1        
+	li $t1, 2    
+	move $t3,$s2        
+	move $t4,$s2
+	move $t5,$s2
+	jal Integer_Multiplication
 	
-	add $a0, $t3, $zero #loads C into $a0
-	add $a1, $t3, $zero #loads C into $a1
-	jal MULTIPLICATION #jump to procedure
-	move $t0, $v0 #moves C^2 into $t0
-	
-	li $t6, 0 #increment
-	Loop3:
-		bge $t6, $t0, Quit3 #runs as long as $t6 < C^2
-		add.s $f0, $f0, $f3 #adds 0.3 C^2 times
-		addi $t6, $t6, 1 #increment
-		j Loop3
-		
-	Quit3:
-	
-	add.s $f7, $f7, $f0 #duplicates $f0
-	l.s $f0, floatValue0 #resets $f0
-	#0.3*C^2 is now in $f7
+	li $t6,0
+	l.s $f1,Zero.Three
+	move $t7,$t5
+	jal Decimal_Multiplication
+	mov.s $f4,$f0
+	l.s $f0,Zero.Zero
+
 	
 	#########################################
 	
 	########### PROCESS FOR 0.4*D ###########
-	
-	li $t6, 0 #increment
-	Loop4:
-		bge $t6, $t4, Quit4 #runs as long as $t6 < D
-		add.s $f0, $f0, $f4 #adds 0.4 D times
-		addi $t6, $t6, 1 #increment
-		j Loop4
-		
-	Quit4:
-	
-	add.s $f8, $f8, $f0 #duplicates $f0
-	l.s $f0, floatValue0 #resets $f0
-	#0.4*D is now in $f8
+
+	li $t6,0
+	l.s $f1,Zero.Four
+	move $t7,$s3
+	jal Decimal_Multiplication
+	mov.s $f5,$f0
+	l.s $f0,Zero.Zero
+
 	
 	#########################################
 	
 	############## F SUMMATION ##############
+		
+	add.s $f6,$f2,$f4
+	add.s $f7,$f3,$f5
+	sub.s,$f6,$f6,$f7
 	
-	#0.1*A^4 is now in $f5
-   	#0.2*B^3 is now in $f6
-	#0.3*C^2 is now in $f7
-	#0.4*D is now in $f8
+	mov.s $f12, $f6 
+    	li $v0, 2
+    	syscall
 	
-	sub.s $f5, $f5, $f6
-	add.s $f5, $f5, $f7
-	sub.s $f5, $f5, $f8 #final sum of F in $f5
+	la $a0,space #loads address of string memory
+	li $v0,4 #System Call Print String 
+	syscall #syscall
 	
-	li $v0, 4 #syscall to print_string
-	la $a0, decimal1 #prints out the decimal string prompt 
-	syscall
-	li $v0, 2 #syscall to print_float
-	mov.s $f12, $f5
-	syscall
-	li $v0, 4 #syscall to print_string
-	la $a0, space #prints out new line
-	syscall
+	
+
 	
 	#########################################
 	
@@ -167,65 +134,59 @@ main:
 	
 	########## PROCESS FOR 0.1*AB^2 #########
 	
-	add $a0, $t2, $zero #loads B into $a0
-	add $a1, $t2, $zero #loads B into $a1
-	jal MULTIPLICATION #jump to procedure
-	move $t0, $v0 #moves B^2 into $t0
+	li $t0, 1        
+	li $t1, 2    
+	move $t3,$s1        
+	move $t4,$s1
+	move $t5,$s1
+	jal Integer_Multiplication
 	
-	add $a0, $t0, $zero #loads B^2 into $a0
-	add $a1, $t1, $zero #loads A into $a1
-	jal MULTIPLICATION #jump to procedure
-	move $t0, $v0 #moves AB^2 into $t0
+	li $t0, 1        
+	li $t1, 2    
+	move $t3,$s0        
+	jal Integer_Multiplication
 	
-	li $t6, 0 #increment
-	Loop5:
-		bge $t6, $t0, Quit5 #runs as long as $t6 < AB^2
-		add.s $f0, $f0, $f1 #adds 0.1 AB^2 times
-		addi $t6, $t6, 1 #increment
-		j Loop5
-		
-	Quit5:
+	li $t6,0
+	l.s $f1,Zero.One
+	move $t7,$t5
+	jal Decimal_Multiplication
+	mov.s $f7,$f0
+	l.s $f0,Zero.Zero
 	
-	add.s $f9, $f9, $f0 #duplicates $f0
-	l.s $f0, floatValue0 #resets $f0
-	#0.1*AB^2 is now in $f9
+
 	
 	#########################################
 	
-	########## PROCESS FOR 0.2*C^2D^3 #########
+	########## PROCESS FOR 0.2*C^2D^3 #######
 	
-	add $a0, $t3, $zero #loads C into $a0
-	add $a1, $t3, $zero #loads C into $a1
-	jal MULTIPLICATION #jump to procedure
-	move $t0, $v0 #moves C^2 into $t0
+	li $t0, 1        
+	li $t1, 2    
+	move $t3,$s2        
+	move $t4,$s2
+	move $t5,$s2
+	jal Integer_Multiplication
+	move $s4,$t5
 	
-	add $a0, $t4, $zero #loads D into $a0
-	add $a1, $t4, $zero #loads D into $a1
-	jal MULTIPLICATION #jump to procedure
-	move $t7, $v0 #moves D^2 into $t7
+	li $t0, 1        
+	li $t1, 3    
+	move $t3,$s3        
+	move $t4,$s3
+	move $t5,$s3
+	jal Integer_Multiplication
 	
-	add $a0, $t7, $zero #loads D^2 into $a0
-	add $a1, $t4, $zero #loads D into $a1
-	jal MULTIPLICATION #jump to procedure
-	move $t7, $v0 #moves D^3 into $t7
+	li $t0, 1        
+	li $t1, 2    
+	move $t3,$s4        
+	jal Integer_Multiplication
 	
-	add $a0, $t0, $zero #loads C^2 into $a0
-	add $a1, $t7, $zero #loads D^3 into $a1
-	jal MULTIPLICATION #jump to procedure
-	move $t0, $v0 #moves C^2D^3 into $t0
+	li $t6,0
+	l.s $f1,Zero.Two
+	move $t7,$t5
+	jal Decimal_Multiplication
+	mov.s $f8,$f0
+	l.s $f0,Zero.Zero
 	
-	li $t6, 0 #increment
-	Loop6:
-		bge $t6, $t0, Quit6 #runs as long as $t6 < C^2D^3
-		add.s $f0, $f0, $f2 #adds 0.2 C^2D^3 times
-		addi $t6, $t6, 1 #increment
-		j Loop6
-		
-	Quit6:
-	
-	add.s $f10, $f10, $f0 #duplicates $f0
-	l.s $f0, floatValue0 #resets $f0
-	#0.2*C^2D^3 is now in $f10
+
 	
 	#########################################
 	
@@ -233,43 +194,42 @@ main:
 	
 	#0.1*AB^2 is now in $f9
    	#0.2*C^2*D^3 is now in $f10
+   	
+   	add.s $f9, $f7,$f8
+   	mov.s $f12, $f9 
+    	li $v0, 2
+    	syscall 
 	
-	add.s $f11, $f9, $f10 #final sum of G in $f11
-	
-	li $v0, 4 #syscall to print_string
-	la $a0, decimal2 #prints out the decimal string prompt 
-	syscall
-	li $v0, 2 #syscall to print_float
-	mov.s $f12, $f11
-	syscall
-	li $v0, 4 #syscall to print_string
-	la $a0, space #prints out new line
-	syscall
+	##########################################
+   	########### Display Output ###############
 	
 	#########################################
 	
 	################## END ##################
 	
-	#END
 	li $v0, 10
 	syscall	
 	
 	############# MULTIPLICATION ############
 	
-	MULTIPLICATION:
-		addi $sp, $sp, -4 #push $t5 on stack
-		sw $t5, 0($sp) #initializes $t5 in memory
+	Integer_Multiplication:  
+  	beq $t0, $t1, End
+  	li $t2, 1            
+	Loop:  
+  	beq $t2, $t3, END  
+  	add $t4,$t4,$t5
+	addi $t2, $t2, 1    #Counter  
+  	j Loop  
+	END:  
+	move $t5,$t4
+	addi $t0, $t0, 1   #Counter   
+  	j Integer_Multiplication  
+	End: jr $ra
 	
-		add $t5, $zero, $zero #clears $t5
-		add $v0, $zero, $zero #clears $v0
+	Decimal_Multiplication:
+		beq $t6, $t7, Exit 
+		add.s $f0, $f0, $f1 
+		addi $t6, $t6, 1 
+		j Decimal_Multiplication	
+	Exit: jr $ra
 	
-		LoopMult:
-			beq $t5, $a0, EXIT #branches when $t5 = input0
-			add $v0, $v0, $a1 #result = result + input1, runs input0 times
-			addi $t5, $t5, 1 #increment
-			j LoopMult
-	
-		EXIT:
-		lw $t5, 0($sp) #restores $t5
-		addi $sp, $sp, 4 #restores memory
-		jr $ra #return

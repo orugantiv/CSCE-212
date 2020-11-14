@@ -1,6 +1,6 @@
 #By; V.N.Anirudh Oruganti
 .data
-prompt: .asciiz "\nEnter 4 integers for A,B,C,D respectively:\n"
+InputMsg: .asciiz "\nEnter 4 integers for A,B,C,D respectively:\n"
 space: .asciiz "\n"
 f: .asciiz "f = "
 g: .asciiz "g = "
@@ -14,112 +14,127 @@ Zero.Four: .float 0.4
 
 main:
 
+	##########################################################
+	##################### User's Input #######################
+	##########################################################
 	
-	################ User's Input ##############
+		#Displays InputMsg  
+	la $a0,InputMsg 		#loads address of string memory
+	li $v0,4 			#System Call Print String 
+	syscall 			#syscall 
 	
-	#displays prompt 
-	la $a0,prompt #loads address of string memory
-	li $v0,4 #System Call Print String 
-	syscall #syscall 
+		#Takes input for A and stores it in $t0
+	li $v0, 5 			#System Call Input Integer
+	syscall 			#syscall
+	move $s0, $v0 			#saves input A to $t0
 	
-	#Takes input for A and stores it in $t0
-	li $v0, 5 #System Call Input Integer
-	syscall #syscall
-	move $s0, $v0 #saves input A to $t0
-	
-	#Takes input for B and stores it in $t1
-	li $v0, 5 #System Call Input Integer
-   	syscall #syscall
-   	move $s1, $v0 #saves input B to $t1
+		#Takes input for B and stores it in $t1
+	li $v0, 5 			#System Call Input Integer
+   	syscall 			#syscall
+   	move $s1, $v0 			#saves input B to $t1
   
-	#Takes input for C and stores it in $t2
-	li $v0, 5 #System Call Input Integer
-   	syscall #syscall
-   	move $s2, $v0 ##saves input C to $t2
+		#Takes input for C and stores it in $t2
+	li $v0, 5 			#System Call Input Integer
+   	syscall 			#syscall
+   	move $s2, $v0 			#saves input C to $t2
   
-	#Takes input for D and stores it in $t3
-	li $v0, 5 #System Call Input Integer
-   	syscall #syscall
-   	move $s3, $v0 #saves input D to $t3
+		#Takes input for D and stores it in $t3
+	li $v0, 5 			#System Call Input Integer
+   	syscall 			#syscall
+   	move $s3, $v0 			#saves input D to $t3
 
 
+	########################################################## 
+	######### F=(0.1×A4)-(0.2×B3)+(0.3×C2)-(0.4×D) ###########
+	##########################################################
+	################# Calculating 0.1*A^4 ####################
+	##########################################################
+	
+	## A^4 ##
+	li $t0, 1 			#Initializing i=0 for Integer_Multiplication      
+	li $t1, 4 			#Initializing the number of times Integer_Multiplication loops   
+	move $t3,$s0			#Initializing A for adding purposes         
+	move $t4,$s0			#Initializing A for adding purposes
+	move $t5,$s0			#Initializing A for adding purposes
+	jal Integer_Multiplication	#This procedure calculates A^4 and return the value in $t5 register
+	
+	## 0.1*A^4 ##
+	li $t6,0			#Initializing i=0 for Decimal_Multiplication 
+	l.s $f1,Zero.One		#Initializing 0.1 into $f1 for adding purposes in Decimal_Multiplication
+	move $t7,$t5			#The number of times $f1 should add to a register in Decimal_Multiplication
+	jal Decimal_Multiplication	#This procedure calculates 0.1*A^4 Decimal Multiplication and return the value in $f0 register
+	mov.s $f2,$f0			#Stores the returned value in $f2 for adding purposes 
+	l.s $f0,Zero.Zero		#Resets $f0 register to 0 for future calculations 
+
+	########################################################## 	
+	################# Calculating 0.2*B^3 ####################
+	##########################################################
+	
+	## B^3 ##
+	li $t0, 1 			#Initializing i=0 for Integer_Multiplication      
+	li $t1, 3 			#Initializing the number of times Integer_Multiplication loops   
+	move $t3,$s1			#Initializing B for adding purposes         
+	move $t4,$s1			#Initializing B for adding purposes
+	move $t5,$s1			#Initializing B for adding purposes
+	jal Integer_Multiplication	#This procedure calculates B^3 and return the value in $t5 register
 	 
+	## 0.2*B^3 ## 
+	li $t6,0			#Initializing i=0 for Decimal_Multiplication 
+	l.s $f1,Zero.Two		#Initializing 0.2 into $f1 for adding purposes in Decimal_Multiplication
+	move $t7,$t5			#The number of times $f1 should add to a register in Decimal_Multiplication
+	jal Decimal_Multiplication	#This procedure calculates 0.2*B^3 Decimal Multiplication and return the value in $f0 register
+	mov.s $f3,$f0			#Stores the returned value in $f3 for adding purposes 
+	l.s $f0,Zero.Zero		#Resets $f0 register to 0 for future calculations 
+			
+	########################################################## 	
+	################# Calculating 0.3*C^2 ####################
+	##########################################################
 	
-	################ F START ################
+	## C^2 ##
+	li $t0, 1 			#Initializing i=0 for Integer_Multiplication      
+	li $t1, 2 			#Initializing the number of times Integer_Multiplication loops   
+	move $t3,$s2			#Initializing C for adding purposes         
+	move $t4,$s2			#Initializing C for adding purposes
+	move $t5,$s2			#Initializing C for adding purposes
+	jal Integer_Multiplication	#This procedure calculates C^2 and return the value in $t5 register
+	 
+	## 0.3*C^2 ## 
+	li $t6,0			#Initializing i=0 for Decimal_Multiplication 
+	l.s $f1,Zero.Three		#Initializing 0.3 into $f1 for adding purposes in Decimal_Multiplication
+	move $t7,$t5			#The number of times $f1 should add to a register in Decimal_Multiplication
+	jal Decimal_Multiplication	#This procedure calculates 0.3*C^2 Decimal Multiplication and return the value in $f0 register
+	mov.s $f4,$f0			#Stores the returned value in $f4 for adding purposes 
+	l.s $f0,Zero.Zero		#Resets $f0 register to 0 for future calculations 
 	
-	########## PROCESS FOR 0.1*A^4 ##########
-	li $t0, 1        
-	li $t1, 4    
-	move $t3,$s0        
-	move $t4,$s0
-	move $t5,$s0
-	jal Integer_Multiplication
-	
-	li $t6,0
-	l.s $f1,Zero.One
-	move $t7,$t5
-	jal Decimal_Multiplication
-	mov.s $f2,$f0
-	l.s $f0,Zero.Zero
-	#########################################
-	
-	########## PROCESS FOR 0.2*B^3 ##########
-	li $t0, 1        
-	li $t1, 3    
-	move $t3,$s1        
-	move $t4,$s1
-	move $t5,$s1
-	jal Integer_Multiplication
-	
-	li $t6,0
-	l.s $f1,Zero.Two
-	move $t7,$t5
-	jal Decimal_Multiplication
-	mov.s $f3,$f0
-	l.s $f0,Zero.Zero
 
+	########################################################## 	
+	################# Calculating 0.4*D ######################
+	##########################################################
+
+	## 0.4*D ## 
+	li $t6,0			#Initializing i=0 for Decimal_Multiplication 
+	l.s $f1,Zero.Four		#Initializing 0.4 into $f1 for adding purposes in Decimal_Multiplication
+	move $t7,$s3			#The number of times $f1 should add to a register in Decimal_Multiplication
+	jal Decimal_Multiplication	#This procedure calculates 0.4*D Decimal Multiplication and return the value in $f0 register
+	mov.s $f5,$f0			#Stores the returned value in $f5 for adding purposes 
+	l.s $f0,Zero.Zero		#Resets $f0 register to 0 for future calculations 
+	
+	##########################################################
+	##################### F Calculations #####################
+	##########################################################
 		
-	#########################################
+	add.s $f6,$f2,$f4		#Adding (0.1×A4)+(0.3×C2)	
+	add.s $f7,$f3,$f5		#Adding (0.2×B3)+(0.4×D)
+	sub.s,$f6,$f6,$f7		#Subtracting (0.1×A4)+(0.3×C2) - (0.2×B3)+(0.4×D) = F
+			
+			#Displays InputMsg  
+	la $a0,f 			#loads address of string memory
+	li $v0,4 			#System Call Print String 
+	syscall 			#syscall 
 	
-	########## PROCESS FOR 0.3*C^2 ##########
-	li $t0, 1        
-	li $t1, 2    
-	move $t3,$s2        
-	move $t4,$s2
-	move $t5,$s2
-	jal Integer_Multiplication
-	
-	li $t6,0
-	l.s $f1,Zero.Three
-	move $t7,$t5
-	jal Decimal_Multiplication
-	mov.s $f4,$f0
-	l.s $f0,Zero.Zero
-
-	
-	#########################################
-	
-	########### PROCESS FOR 0.4*D ###########
-
-	li $t6,0
-	l.s $f1,Zero.Four
-	move $t7,$s3
-	jal Decimal_Multiplication
-	mov.s $f5,$f0
-	l.s $f0,Zero.Zero
-
-	
-	#########################################
-	
-	############## F SUMMATION ##############
-		
-	add.s $f6,$f2,$f4
-	add.s $f7,$f3,$f5
-	sub.s,$f6,$f6,$f7
-	
-	mov.s $f12, $f6 
-    	li $v0, 2
-    	syscall
+	mov.s $f12, $f6 		#Saving F value to $f12 to print 
+    	li $v0, 2			#System call Print Floating Point
+    	syscall				#syscall
 	
 	la $a0,space #loads address of string memory
 	li $v0,4 #System Call Print String 
@@ -132,7 +147,7 @@ main:
 	
 	################ G START ################
 	
-	########## PROCESS FOR 0.1*AB^2 #########
+	########## Calculating 0.1*AB^2 #########
 	
 	li $t0, 1        
 	li $t1, 2    
@@ -157,7 +172,7 @@ main:
 	
 	#########################################
 	
-	########## PROCESS FOR 0.2*C^2D^3 #######
+	########## Calculating 0.2*C^2D^3 #######
 	
 	li $t0, 1        
 	li $t1, 2    
@@ -200,12 +215,6 @@ main:
     	li $v0, 2
     	syscall 
 	
-	##########################################
-   	########### Display Output ###############
-	
-	#########################################
-	
-	################## END ##################
 	
 	li $v0, 10
 	syscall	
